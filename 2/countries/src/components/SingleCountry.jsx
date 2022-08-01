@@ -5,7 +5,6 @@ const SingleCountry = ({ country, ow_api_key }) => {
   const [weather, setWeather] = useState()
 
   useEffect(() => {
-    console.log(country)
     axios
       .get(
         //`https://api.openweathermap.org/data/2.5/weather?lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&appid=${ow_api_key}&units=metric`
@@ -14,9 +13,7 @@ const SingleCountry = ({ country, ow_api_key }) => {
       .then((response) => {
         setWeather(response.data)
       })
-  }, [])
-
-  console.log(weather)
+  }, [country.capitalInfo.latlng, ow_api_key])
 
   return (
     <div>
@@ -32,12 +29,16 @@ const SingleCountry = ({ country, ow_api_key }) => {
       <img src={country.flags.png} alt="Flag"></img>
       <div>
         <h2>Weather in {country.capital[0]}</h2>
-        {weather ? <p>Temperature is {weather.current.temp}ºC</p> : null}
-        <img
-          src={`http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
-          alt="weather"
-        ></img>
-        <p>Wind is {weather.current.wind_speed} m/s</p>
+        {weather !== undefined ? (
+          <>
+            <p>Temperature is {weather.current.temp}ºC</p>
+            <img
+              src={`http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
+              alt="weather"
+            ></img>
+            <p>Wind is {weather.current.wind_speed} m/s</p>
+          </>
+        ) : null}
       </div>
     </div>
   )

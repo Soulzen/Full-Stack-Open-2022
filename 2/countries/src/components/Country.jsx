@@ -19,10 +19,11 @@ const Country = ({ countries, handleShow, ow_api_key }) => {
   }
   //THERE IS ONE COUNTRY FILTERED
   else if (countries.length === 1) {
-    const country = countries[0]
-
     return (
-      <SingleCountry country={country} ow_api_key={ow_api_key}></SingleCountry>
+      <SingleCountry
+        country={countries[0]}
+        ow_api_key={ow_api_key}
+      ></SingleCountry>
     )
   }
   //THERE ARE NO COUNTRIES FILTERED
