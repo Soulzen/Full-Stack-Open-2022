@@ -7,7 +7,6 @@ const SingleCountry = ({ country, ow_api_key }) => {
   useEffect(() => {
     axios
       .get(
-        //`https://api.openweathermap.org/data/2.5/weather?lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&appid=${ow_api_key}&units=metric`
         `https://api.openweathermap.org/data/2.5/onecall?lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&exclude=hourly,daily&appid=${ow_api_key}&units=metric`
       )
       .then((response) => {

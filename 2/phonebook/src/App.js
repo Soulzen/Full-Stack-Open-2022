@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
 
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
+
+import numbersService from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,8 +14,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data)
+    numbersService.getAll().then((initialNumbers) => {
+      setPersons(initialNumbers)
     })
   }, [])
 
@@ -23,11 +24,37 @@ const App = () => {
     let write = true
     persons.forEach((person) => {
       if (person.name === newName) {
-        alert(`${newName} is already on the phonebook`)
         write = false
+        if (
+          window.confirm(
+            `${person.name} is already in the phonebook. Would you like to update the number?`
+          )
+        ) {
+          numbersService
+            .update(person.id, { ...person, number: newNumber })
+            .then((data) => {
+              setPersons(persons.map((p) => (p.id === person.id ? data : p)))
+            })
+        }
       }
     })
-    if (write) setPersons(persons.concat({ name: newName, number: newNumber }))
+    console.log("Write:", write)
+    if (write) {
+      const newPerson = { name: newName, number: newNumber }
+      numbersService.create(newPerson).then((data) => {
+        setPersons(persons.concat(data))
+        setNewName("")
+        setNewNumber("")
+      })
+    }
+  }
+
+  const handleRemoveId = (id) => {
+    const personToDelete = persons.find((person) => person.id === id)
+    if (window.confirm(`Do you want to delete ${personToDelete.name}?`))
+      numbersService.remove(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id))
+      })
   }
 
   const handleName = (event) => {
@@ -55,7 +82,11 @@ const App = () => {
         newNumber={newNumber}
       ></PersonForm>
       <h2>Numbers</h2>
-      <Persons persons={persons} newFilter={newFilter}></Persons>
+      <Persons
+        persons={persons}
+        newFilter={newFilter}
+        handleRemoveId={handleRemoveId}
+      ></Persons>
     </div>
   )
 }
