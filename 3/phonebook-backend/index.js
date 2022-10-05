@@ -67,7 +67,7 @@ app.post('/api/persons', (req, res, next) => {
   if (body.name && body.number) {
     const person = new Person({
       name: body.name,
-      number: body.number,
+      number: body.number
     })
     person
       .save()
@@ -88,7 +88,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     {
       new: true,
       runValidators: true,
-      context: 'query',
+      context: 'query'
     }
   )
     .then((updatedPerson) => {
