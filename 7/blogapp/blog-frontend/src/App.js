@@ -1,61 +1,36 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
-import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Toggable'
+import Home from './components/Home'
 
-import { initializeBlogs } from './reducers/blogsReducer'
-import { loggout, loadStoredUser } from './reducers/usersReducer'
+import { loadStoredUser } from './reducers/loggedUsersReducer'
+import UserList from './components/UsersList'
 
 const App = () => {
+  const user = useSelector(({ loggedUser }) => loggedUser)
   const dispatch = useDispatch()
-
-  const blogs = useSelector(({ blogs }) => blogs)
-
-  const user = useSelector(({ user }) => user)
 
   const notification = useSelector(({ notification }) => notification)
 
   useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(loadStoredUser())
-  }, [dispatch])
+  }, [])
 
-  const sortedBlogs = [...blogs].sort((a, b) => {
-    return b.likes - a.likes
-  })
-
-  return user === null ? (
-    <>
-      <Notification message={notification}></Notification>
-      <LoginForm></LoginForm>
-    </>
-  ) : (
+  return (
     <div>
-      <h2>blogs</h2>
-      <Notification message={notification}></Notification>
-      <div>
-        {user.name} logged in
-        <button
-          onClick={() => {
-            dispatch(loggout())
-          }}
-        >
-          Logout
-        </button>
-      </div>
-      <Togglable buttonLabel="New Blog" /* ref={noteFormRef} */>
-        <NewBlogForm></NewBlogForm>
-      </Togglable>
-      {sortedBlogs.map(blog => (
-        <Blog key={blog.id} blog={blog} user={user} />
-      ))}
+      <h1>BLOGS</h1>
+      <Notification message={notification} />
+      <Routes>
+        <Route
+          path="/"
+          element={user ? <Home /> : <Navigate replace to="/login" />}
+        />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/users" element={<UserList />} />
+      </Routes>
     </div>
   )
 }

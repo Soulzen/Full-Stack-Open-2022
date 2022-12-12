@@ -5,7 +5,7 @@ import { addBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { toggleVisivility } from '../reducers/togglableReducer'
 
-const NewPostForm = () => {
+const NewBlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -82,4 +82,4 @@ const NewPostForm = () => {
   )
 }
 
-export default NewPostForm
+export default NewBlogForm

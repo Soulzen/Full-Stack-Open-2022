@@ -32,7 +32,6 @@ export default blogSlice.reducer
 export const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll()
-    console.log(blogs)
     dispatch(set(blogs))
   }
 }
@@ -40,7 +39,6 @@ export const initializeBlogs = () => {
 export const addBlog = blog => {
   return async dispatch => {
     const addedBlog = await blogService.createBlog(blog)
-    console.log('Added Blog: ', addedBlog)
     dispatch(create(addedBlog))
   }
 }
