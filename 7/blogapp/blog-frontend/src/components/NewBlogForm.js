@@ -1,15 +1,40 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-const NewPostForm = ({ createBlog }) => {
+import { addBlog } from '../reducers/blogsReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { toggleVisivility } from '../reducers/togglableReducer'
+
+const NewPostForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = event => {
+  const dispatch = useDispatch()
+
+  const handleSubmit = async event => {
     event.preventDefault()
 
     const newBlog = { title, author, url, likes: 0 }
-    createBlog(newBlog)
+
+    try {
+      await dispatch(addBlog(newBlog))
+      dispatch(
+        setNotification({
+          isError: false,
+          content: `Created blog ${newBlog.title}`
+        })
+      )
+      dispatch(toggleVisivility())
+    } catch (e) {
+      console.error('Unable to create blog', e)
+      dispatch(
+        setNotification({
+          isError: true,
+          content: 'Unable to create new blog'
+        })
+      )
+    }
   }
 
   return (

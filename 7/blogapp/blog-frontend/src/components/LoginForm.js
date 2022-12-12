@@ -1,27 +1,29 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-import loginService from '../services/login'
-import blogsService from '../services/blogs'
+import { setNotification } from '../reducers/notificationReducer'
+import { loginUser } from '../reducers/usersReducer'
 
-const LoginForm = ({ updateUser, updateNotification }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const dispatch = useDispatch()
 
   const handleLogin = async event => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogsService.setToken(user.token)
-      updateUser(user)
+      await dispatch(loginUser({ username, password }))
       setUsername('')
       setPassword('')
     } catch (e) {
-      updateNotification({
-        isError: true,
-        content: 'Unable to log in'
-      })
+      dispatch(
+        setNotification({
+          isError: true,
+          content: 'Unable to log in'
+        })
+      )
       console.error('Wrong Credentials', e)
     }
   }

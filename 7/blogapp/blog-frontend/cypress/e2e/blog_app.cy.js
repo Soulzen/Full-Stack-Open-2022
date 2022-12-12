@@ -19,6 +19,7 @@ describe('Blog app', function () {
       cy.get('#username').type('Alberto')
       cy.get('#password').type('alberto')
       cy.get('#loginButton').click()
+      cy.wait(500)
       cy.contains('Alberto logged in')
     })
     it('Login unsuccessful', function () {

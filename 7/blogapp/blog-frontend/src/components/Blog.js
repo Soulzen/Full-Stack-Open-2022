@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-const Blog = ({ blog, addLike, user, deleteBlog }) => {
+import { deleteBlog, likeBlog } from '../reducers/blogsReducer'
+
+const Blog = ({ blog, user }) => {
   const blogStyle = {
     padding: 10,
     paddingLeft: 4,
@@ -9,14 +12,26 @@ const Blog = ({ blog, addLike, user, deleteBlog }) => {
     marginBottom: 5
   }
 
+  const dispatch = useDispatch()
+
   const [fullInfo, setFullInfo] = useState(false)
 
-  const handleLike = () => {
-    addLike({ ...blog, likes: blog.likes + 1 })
+  const handleLike = async () => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+
+    try {
+      await dispatch(likeBlog(updatedBlog))
+    } catch (error) {
+      console.error('Unable to update blog')
+    }
   }
 
-  const handleDelete = () => {
-    deleteBlog(blog)
+  const handleDelete = async () => {
+    try {
+      await dispatch(deleteBlog(blog))
+    } catch (error) {
+      console.error('Unable to update blog')
+    }
   }
 
   return (

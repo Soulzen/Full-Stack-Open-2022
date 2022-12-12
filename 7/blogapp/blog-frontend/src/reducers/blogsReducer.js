@@ -40,11 +40,12 @@ export const initializeBlogs = () => {
 export const addBlog = blog => {
   return async dispatch => {
     const addedBlog = await blogService.createBlog(blog)
+    console.log('Added Blog: ', addedBlog)
     dispatch(create(addedBlog))
   }
 }
 
-export const deleteBlogR = blog => {
+export const deleteBlog = blog => {
   return async dispatch => {
     await blogService.deleteBlog(blog)
     dispatch(remove(blog))

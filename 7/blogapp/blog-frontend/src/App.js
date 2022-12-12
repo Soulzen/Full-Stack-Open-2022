@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
@@ -7,89 +7,25 @@ import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Toggable'
 
-import blogService from './services/blogs'
-
-import {
-  initializeBlogs,
-  addBlog,
-  deleteBlogR,
-  likeBlog
-} from './reducers/blogsReducer'
+import { initializeBlogs } from './reducers/blogsReducer'
+import { loggout, loadStoredUser } from './reducers/usersReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({
-    isError: false,
-    content: null
-  })
-
   const dispatch = useDispatch()
 
-  const blogs = useSelector(({ blogs }) => {
-    return blogs
-  })
+  const blogs = useSelector(({ blogs }) => blogs)
 
-  const noteFormRef = useRef()
+  const user = useSelector(({ user }) => user)
 
-  const updateUser = user => {
-    setUser(user)
-  }
-
-  const updateNotification = message => {
-    setNotification(message)
-    setTimeout(() => {
-      setNotification({
-        isError: false,
-        content: null
-      })
-    }, 3000)
-  }
-
-  const createBlog = async newBlog => {
-    try {
-      dispatch(addBlog(newBlog))
-      noteFormRef.current.toggleVisibility()
-      updateNotification({
-        isError: false,
-        content: `Created blog ${newBlog.title}`
-      })
-    } catch (e) {
-      console.error('Unable to create blog', e)
-      updateNotification({
-        isError: true,
-        content: 'Unable to create new blog'
-      })
-    }
-  }
-
-  const addLike = async blog => {
-    try {
-      dispatch(likeBlog(blog))
-    } catch (error) {
-      console.error('Unable to update blog')
-    }
-  }
-
-  const deleteBlog = async blogToDelete => {
-    try {
-      dispatch(deleteBlogR(blogToDelete))
-    } catch (error) {
-      console.error('Unable to update blog')
-    }
-  }
+  const notification = useSelector(({ notification }) => notification)
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+    dispatch(loadStoredUser())
+  }, [dispatch])
 
   const sortedBlogs = [...blogs].sort((a, b) => {
     return b.likes - a.likes
@@ -98,10 +34,7 @@ const App = () => {
   return user === null ? (
     <>
       <Notification message={notification}></Notification>
-      <LoginForm
-        updateUser={updateUser}
-        updateNotification={updateNotification}
-      ></LoginForm>
+      <LoginForm></LoginForm>
     </>
   ) : (
     <div>
@@ -111,24 +44,17 @@ const App = () => {
         {user.name} logged in
         <button
           onClick={() => {
-            window.localStorage.removeItem('loggedUser')
-            setUser(null)
+            dispatch(loggout())
           }}
         >
           Logout
         </button>
       </div>
-      <Togglable buttonLabel="New Blog" ref={noteFormRef}>
-        <NewBlogForm createBlog={createBlog}></NewBlogForm>
+      <Togglable buttonLabel="New Blog" /* ref={noteFormRef} */>
+        <NewBlogForm></NewBlogForm>
       </Togglable>
       {sortedBlogs.map(blog => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          addLike={addLike}
-          user={user}
-          deleteBlog={deleteBlog}
-        />
+        <Blog key={blog.id} blog={blog} user={user} />
       ))}
     </div>
   )
