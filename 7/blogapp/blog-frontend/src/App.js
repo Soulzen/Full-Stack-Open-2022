@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -8,12 +9,20 @@ import Togglable from './components/Toggable'
 
 import blogService from './services/blogs'
 
+import { initializeBlogs, addBlog } from './reducers/blogsReducer'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  //const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({
     isError: false,
     content: null
+  })
+
+  const dispatch = useDispatch()
+
+  const blogs = useSelector(({ blogs }) => {
+    return blogs
   })
 
   const noteFormRef = useRef()
@@ -34,13 +43,12 @@ const App = () => {
 
   const createBlog = async newBlog => {
     try {
-      const savedBlog = await blogService.createBlog(newBlog)
+      dispatch(addBlog(newBlog))
       noteFormRef.current.toggleVisibility()
       updateNotification({
         isError: false,
         content: `Created blog ${newBlog.title}`
       })
-      setBlogs(blogs.concat(savedBlog))
     } catch (e) {
       console.error('Unable to create blog', e)
       updateNotification({
@@ -50,13 +58,13 @@ const App = () => {
     }
   }
 
-  const addLike = async blog => {
+  const addLike = async () => /* blog */ {
     try {
-      const updatedBlog = await blogService.updateBlog(blog)
-      const updatedBlogs = blogs.map(blog => {
+      //const updatedBlog = await blogService.updateBlog(blog)
+      /* const updatedBlogs = blogs.map(blog => {
         return blog.id === updatedBlog.id ? updatedBlog : blog
-      })
-      setBlogs(updatedBlogs)
+      }) */
+      //setBlogs(updatedBlogs)
     } catch (error) {
       console.error('Unable to update blog')
     }
@@ -65,19 +73,19 @@ const App = () => {
   const deleteBlog = async blogToDelete => {
     try {
       await blogService.deleteBlog(blogToDelete)
-      const remainingBlogs = blogs.filter(blog => {
+      /* const remainingBlogs = blogs.filter(blog => {
         return blog.id !== blogToDelete.id
       })
 
-      setBlogs(remainingBlogs)
+      setBlogs(remainingBlogs) */
     } catch (error) {
       console.error('Unable to update blog')
     }
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
