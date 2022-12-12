@@ -9,10 +9,14 @@ import Togglable from './components/Toggable'
 
 import blogService from './services/blogs'
 
-import { initializeBlogs, addBlog } from './reducers/blogsReducer'
+import {
+  initializeBlogs,
+  addBlog,
+  deleteBlogR,
+  likeBlog
+} from './reducers/blogsReducer'
 
 const App = () => {
-  //const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({
     isError: false,
@@ -58,13 +62,9 @@ const App = () => {
     }
   }
 
-  const addLike = async () => /* blog */ {
+  const addLike = async blog => {
     try {
-      //const updatedBlog = await blogService.updateBlog(blog)
-      /* const updatedBlogs = blogs.map(blog => {
-        return blog.id === updatedBlog.id ? updatedBlog : blog
-      }) */
-      //setBlogs(updatedBlogs)
+      dispatch(likeBlog(blog))
     } catch (error) {
       console.error('Unable to update blog')
     }
@@ -72,12 +72,7 @@ const App = () => {
 
   const deleteBlog = async blogToDelete => {
     try {
-      await blogService.deleteBlog(blogToDelete)
-      /* const remainingBlogs = blogs.filter(blog => {
-        return blog.id !== blogToDelete.id
-      })
-
-      setBlogs(remainingBlogs) */
+      dispatch(deleteBlogR(blogToDelete))
     } catch (error) {
       console.error('Unable to update blog')
     }
