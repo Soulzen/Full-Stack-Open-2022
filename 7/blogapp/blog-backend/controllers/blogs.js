@@ -3,13 +3,20 @@ const jwt = require('jsonwebtoken')
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 
 router.get('/', async (request, response) => {
-  const notes = await Blog.find({})
+  const blogs = await Blog.find({})
     .find({})
     .populate('user', { username: 1, name: 1 })
+    .populate('comments', { comment: 1 })
 
-  response.json(notes)
+  response.json(blogs)
+})
+
+router.get('/:id/comments', async (request, response) => {
+  const comments = await Comment.find({ blog: request.params.id })
+  response.json(comments)
 })
 
 router.post('/', async (request, response) => {
@@ -26,6 +33,22 @@ router.post('/', async (request, response) => {
   await user.save()
 
   response.status(201).json(savedBlog)
+})
+
+router.post('/:id/comments', async (request, response) => {
+  const id = request.params.id
+
+  const blog = await Blog.findById(id)
+  const comment = new Comment({ comment: request.body.comment, blog: blog.id })
+
+  savedComment = await comment.save()
+
+  blog.comments = blog.comments
+    ? [...blog.comments, savedComment._id]
+    : [savedComment._id]
+  await blog.save()
+
+  response.status(201).json(savedComment)
 })
 
 router.delete('/:id', async (request, response) => {
