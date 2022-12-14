@@ -6,16 +6,17 @@ const Login = () => {
   const dispatch = useDispatch()
   const user = useSelector(({ loggedUser }) => loggedUser)
   return (
-    <div>
+    <>
       {user.name} logged in
       <button
+        style={{ margin: 5 }}
         onClick={() => {
           dispatch(loggout())
         }}
       >
         Logout
       </button>
-    </div>
+    </>
   )
 }
 
