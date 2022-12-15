@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux'
 
-import { deleteBlog, likeBlog } from '../reducers/blogsReducer'
+import { deleteBlog, updateBlog } from '../reducers/blogsReducer'
+import CommentSection from './CommentSection'
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch()
@@ -9,7 +10,7 @@ const Blog = ({ blog, user }) => {
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
 
     try {
-      await dispatch(likeBlog(updatedBlog))
+      await dispatch(updateBlog(updatedBlog))
     } catch (error) {
       console.error('Unable to update blog')
     }
@@ -33,14 +34,24 @@ const Blog = ({ blog, user }) => {
         <p id="url">
           Url: <a href={blog.url}> {blog.url}</a>
         </p>
+        <p>added by {blog.user.name}</p>
         <div id="likes">
           Likes: {blog.likes}
-          <button style={{ margin: 5 }} onClick={handleLike} id="likeButton">
+          <button
+            style={{ margin: 5 }}
+            onClick={handleLike}
+            id="likeButton"
+          >
             Like
           </button>
         </div>
+        <CommentSection blog={blog} />
         {user.username === blog.user.username ? (
-          <button style={{ margin: 5 }} id="deleteButton" onClick={handleDelete}>
+          <button
+            style={{ margin: 5 }}
+            id="deleteButton"
+            onClick={handleDelete}
+          >
             Delete
           </button>
         ) : null}
