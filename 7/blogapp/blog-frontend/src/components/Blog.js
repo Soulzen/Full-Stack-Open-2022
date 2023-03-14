@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux'
+import { Button, Link, Typography } from '@mui/material'
 
 import { deleteBlog, updateBlog } from '../reducers/blogsReducer'
 import CommentSection from './CommentSection'
@@ -25,35 +26,48 @@ const Blog = ({ blog, user }) => {
   }
   if (!blog) return false
   return (
-    <div id="blog">
-      <h2 id="title">
+    <div id="blog" style={{ padding: '15px' }}>
+      <Typography
+        variant="h5"
+        align="left"
+        gutterBottom
+        sx={{ fontWeight: 'bold', color: 'primary' }}
+        id="title"
+      >
         {blog.title} by {blog.author}
-      </h2>
+      </Typography>
 
       <div>
-        <p id="url">
-          Url: <a href={blog.url}> {blog.url}</a>
-        </p>
-        <p>added by {blog.user.name}</p>
+        <Typography id="url">
+          Url:{' '}
+          <Link href={blog.url} underline="none">
+            {blog.url}
+          </Link>
+        </Typography>
+        <Typography>added by {blog.user.name}</Typography>
         <div id="likes">
-          Likes: {blog.likes}
-          <button
-            style={{ margin: 5 }}
-            onClick={handleLike}
-            id="likeButton"
-          >
-            Like
-          </button>
+          <Typography>
+            Likes: {blog.likes}{' '}
+            <Button
+              variant="contained"
+              style={{ margin: 3, padding: 2 }}
+              onClick={handleLike}
+              id="likeButton"
+            >
+              Like
+            </Button>
+          </Typography>
         </div>
         <CommentSection blog={blog} />
         {user.username === blog.user.username ? (
-          <button
+          <Button
+            variant="outlined"
             style={{ margin: 5 }}
             id="deleteButton"
             onClick={handleDelete}
           >
             Delete
-          </button>
+          </Button>
         ) : null}
       </div>
     </div>

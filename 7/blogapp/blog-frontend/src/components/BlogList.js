@@ -1,39 +1,25 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-
-import { initializeBlogs } from '../reducers/blogsReducer'
+import { List, ListItem, ListItemText, ListItemButton } from '@mui/material'
 
 const BlogList = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [dispatch])
-
   const sortedBlogs = useSelector(({ blogs }) => {
     return [...blogs].sort((a, b) => {
       return b.likes - a.likes
     })
   })
 
-  const style = {
-    padding: 10,
-    paddingLeft: 4,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
     <div>
-      <ul>
+      <List>
         {sortedBlogs.map(blog => (
-          <li style={style} key={blog.id}>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </li>
+          <ListItem key={blog.id}>
+            <ListItemButton component={Link} to={`/blogs/${blog.id}`}>
+              <ListItemText primary={blog.title} />
+            </ListItemButton>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   )
 }

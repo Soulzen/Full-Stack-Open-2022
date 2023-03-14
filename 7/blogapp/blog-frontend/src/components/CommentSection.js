@@ -1,3 +1,4 @@
+import { Button, List, ListItem, ListItemText, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -11,27 +12,36 @@ const CommentSection = ({ blog }) => {
   const handleSubmit = event => {
     event.preventDefault()
     dispatch(addComment(blog.id, comment))
+    setComment('')
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
+        <TextField
           id="commentInput"
+          variant="outlined"
+          multiline
+          fullWidth
+          sx={{ flex: 1 }}
           type="text"
           value={comment}
           name="Comment"
           placeholder="add a comment"
           onChange={({ target }) => setComment(target.value)}
-        ></input>
-        <button type="submit">add comment</button>
+        ></TextField>
+        <Button variant="contained" type="submit">
+          add comment
+        </Button>
       </form>
       <div>
-        <ul>
+        <List>
           {blog.comments.map(comment => (
-            <li key={comment.id}>{comment.comment}</li>
+            <ListItem key={comment.id}>
+              <ListItemText>{comment.comment}</ListItemText>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       </div>
     </div>
   )

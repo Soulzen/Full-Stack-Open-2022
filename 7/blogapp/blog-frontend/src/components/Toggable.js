@@ -1,3 +1,4 @@
+import { Button, Container } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -15,15 +16,37 @@ const Togglable = props => {
   }
 
   return (
-    <div>
+    <Container
+      maxWidth="sm"
+      /* sx={
+        {
+          border: 'solid 5px black',
+          backgroundColor: '#F5F5F5',
+          boxShadow:
+          '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+        }
+      } */
+    >
       <div style={hideWhenVisible}>
-        <button onClick={handleVisible}>{props.buttonLabel}</button>
+        <Button
+          variant="contained"
+          sx={{ width: '90%', marginLeft: '5%' }}
+          onClick={handleVisible}
+        >
+          {props.buttonLabel}
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={handleVisible}>cancel</button>
+        <Button
+          sx={{ margin: '10px' }}
+          variant="outlined"
+          onClick={handleVisible}
+        >
+          cancel
+        </Button>
       </div>
-    </div>
+    </Container>
   )
 }
 

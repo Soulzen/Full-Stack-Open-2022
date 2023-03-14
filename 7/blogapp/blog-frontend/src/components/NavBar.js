@@ -1,18 +1,33 @@
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { AppBar, Toolbar, Button } from '@mui/material'
+
 import Login from './Login'
 
 const NavBar = () => {
-  const style = { padding: 5 }
+  const storedUser = useSelector(({ loggedUser }) => loggedUser)
   return (
-    <div>
-      <Link style={style} to="/">
-        Home
-      </Link>
-      <Link style={style} to="/users">
-        Users
-      </Link>
-      <Login style={style} />
-    </div>
+    <AppBar position="static">
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+          >
+            HOME
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/users"
+          >
+            USERS
+          </Button>
+        </div>
+        {storedUser ? <Login /> : null}
+      </Toolbar>
+    </AppBar>
   )
 }
 

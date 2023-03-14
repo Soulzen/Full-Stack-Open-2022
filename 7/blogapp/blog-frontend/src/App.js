@@ -1,17 +1,21 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Routes, Route, Navigate, useMatch } from 'react-router-dom'
+import CssBaseline from '@mui/material/CssBaseline'
 
-import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
-import Home from './components/Home'
-import User from './components/User'
-import UserList from './components/UsersList'
-import Blog from './components/Blog'
-import NavBar from './components/NavBar'
+import {
+  NavBar,
+  Notification,
+  Home,
+  LoginForm,
+  UserList,
+  User,
+  Blog
+} from './components'
 
 import { loadStoredUser } from './reducers/loggedUsersReducer'
 import { initializeUsers } from './reducers/usersReducer'
+import { initializeBlogs } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -24,6 +28,7 @@ const App = () => {
   useEffect(() => {
     dispatch(loadStoredUser())
     dispatch(initializeUsers())
+    dispatch(initializeBlogs())
   }, [])
 
   const userMatch = useMatch('/users/:id')
@@ -34,15 +39,21 @@ const App = () => {
 
   return (
     <div>
+      <CssBaseline />
       <NavBar />
-      <h1>BLOGS</h1>
       <Notification message={notification} />
       <Routes>
-        <Route path="/" element={loggedUser ? <Home /> : <Navigate replace to="/login" />} />
+        <Route
+          path="/"
+          element={loggedUser ? <Home /> : <Navigate replace to="/login" />}
+        />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/users" element={<UserList />} />
         <Route path="/users/:id" element={<User user={user} />} />
-        <Route path="/blogs/:id" element={<Blog blog={blog} user={loggedUser} />} />
+        <Route
+          path="/blogs/:id"
+          element={<Blog blog={blog} user={loggedUser} />}
+        />
       </Routes>
     </div>
   )

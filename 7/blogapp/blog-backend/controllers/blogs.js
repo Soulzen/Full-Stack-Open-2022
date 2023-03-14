@@ -29,7 +29,7 @@ router.post('/', async (request, response) => {
 
   const savedBlog = await blog.save()
 
-  user.blogs = user.blogs.concat(savedBlog._id)
+  user.blogs = user.blogs ? user.blogs.concat(savedBlog._id) : [savedBlog._id]
   await user.save()
 
   response.status(201).json(savedBlog)
@@ -41,7 +41,7 @@ router.post('/:id/comments', async (request, response) => {
   const blog = await Blog.findById(id)
   const comment = new Comment({ comment: request.body.comment, blog: blog.id })
 
-  savedComment = await comment.save()
+  const savedComment = await comment.save()
 
   blog.comments = blog.comments
     ? [...blog.comments, savedComment._id]
@@ -76,6 +76,8 @@ router.put('/:id', async (request, response) => {
     runValidators: true,
     context: 'query'
   })
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { comment: 1 })
 
   response.json(updatedBlog)
 })
