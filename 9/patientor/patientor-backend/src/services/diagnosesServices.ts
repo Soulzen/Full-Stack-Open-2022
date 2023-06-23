@@ -1,11 +1,16 @@
+import { Diagnosis } from "./../types";
 import diagnosesData from "../../data/diagnoses";
 
-import { Diagnose } from "../types";
+const diagnoses: Diagnosis[] = diagnosesData;
 
-const diagnoses: Diagnose[] = diagnosesData;
-
-const getDiagnosesData = (): Diagnose[] => {
+const getDiagnosesData = (): Diagnosis[] => {
   return diagnoses;
 };
 
-export default { getDiagnosesData };
+const getDiagnosisById = (id: string): Diagnosis | undefined => {
+  return diagnoses.find((diagnosis) => {
+    return diagnosis.code === id;
+  });
+};
+
+export default { getDiagnosesData, getDiagnosisById };
